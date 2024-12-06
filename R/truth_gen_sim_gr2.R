@@ -1,8 +1,7 @@
-setwd("C:/Backup/2nd project/code/simulation/Gr2/s1_new")
 library(matrixcalc)
 library(Matrix)
 
-source("function_v2.R")
+source("functions.R")
 
 
 k1 <- 20
