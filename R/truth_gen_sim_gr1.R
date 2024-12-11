@@ -1,8 +1,7 @@
-setwd("C:/Backup/2nd project/code/simulation/s1_new")
 library(matrixcalc)
 library(Matrix)
 
-source("function_v2.R")
+source("functions.R")
 
 k1 <- 20
 k2 <- 10
@@ -27,14 +26,12 @@ Q1 <- 0.3*diag(p)
 df <- 1
 theta <- 0.5
 
+d_tau <- truth_common(k1,k2,target)
+d_tau <- d_tau*0.01
 
-#d_tau <- truth_common(k1,k2,target)
-#d_tau <- d_tau*0.01
-#save(d_tau,file=paste("common", ".dat", sep=''))
-load("common.dat")
-
-# Create A
-  p1 <- k1+k2
+A_true <- list();w_true <- list()
+for(i in 1:npop){
+p1 <- k1+k2
   z <- rnorm(p1^2)
   rand_mtx <- matrix(z,nrow=p1,ncol=p1)
   x <- matrix(sd3,nrow=p1,ncol=p1)
@@ -75,31 +72,9 @@ load("common.dat")
   W <- cbind(W1,W2)
   max(abs(eigen(W)$values))
   A[1:k1,1:(k1+k2)] <- A[1:k1,1:(k1+k2)]/(theta ^ 2)
- 
-
-#A_true <- list();w_true <- list()
-
-A_true[[10]] <- A
-w_true[[10]] <- W
-
-# Save sequentially for all A and W.
-
-eig <- numeric()
-eig1 <- numeric()
-for(j in 1:npop){
-  eig <- c(eig,max(abs(eigen(w_true[[j]])$values)))
-  eig1 <- c(eig1,max(abs(eigen(A_true[[j]])$values)))
-}
-eig
-eig1
-
-
-save(A_true,file=paste("A_true_0.01_10", ".dat", sep=''))
-save(w_true, file=paste("w_true_0.01_10", ".dat", sep=''))
-
-
-#####################
-load("w_true_0.01.dat")
+  A_true[[i]] <- A
+  w_true[[i]] <- W
+ }
 
 temp_w <- w_true[[1]]
 #======================================================
@@ -107,4 +82,3 @@ sigma_true <- Gen_Sigma(k1,k2)$sigma_true
 desired_SNR <- 2
 k <- norm(temp_w, type="F")/norm(desired_SNR*sigma_true, type="F")
 sigma_true <- k * sigma_true
-save(sigma_true,file=paste("sigma_true_0.01", ".dat", sep=''))
