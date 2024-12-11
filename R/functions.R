@@ -18,6 +18,28 @@ truth_common <- function(k1,k2,target){
   d_tau 
 }
 
+truth_common_g2 <- function(k1,k2,target,num){
+  p1 <- k1+k2
+  tau <- runif(p1^2, 0.2, 0.9)*ifelse(rbinom(p1^2,1,0.7),-1,1)
+  tau
+  d_tau <- matrix(tau,nrow=p1,ncol=p1)
+  d_tau
+  sub <- d_tau[1:p1,1:num]
+  for(i in 1:p1){
+    sub[i,] <- rep(sub[i,1],num)
+  }
+  d_tau <- cbind(sub,d_tau[1:p1,(num+1):p1])
+  #target <- 0.7
+  eig = max(abs(eigen(d_tau)$values))
+  count = 0
+  while (eig>target){
+    count = count+1
+    d_tau= d_tau*0.95
+    eig = max(abs(eigen(d_tau)$values))
+  }
+  d_tau
+}
+
 
 #=======================================Generate Sigma Matrix=================================
 Gen_Sigma = function(k1,k2)
