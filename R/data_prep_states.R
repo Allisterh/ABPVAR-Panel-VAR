@@ -6,7 +6,6 @@ library(clusterGeneration)
 library(MASS)
 library(Matrix)
 library(glmnet)
-setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data")
 index <- 1
 
 #==================
@@ -103,11 +102,7 @@ for(j in 1:k1){
   mf_list[[i]][[j]] <- ts(new[[i]][[j]][,1],start=c(2007,5),frequency=12) 
 }
 }
-
-
-
 lf <- list()
-
 for(i in 1:npop){
   lf1 <- NULL
 for(j in 1:15){
@@ -115,10 +110,6 @@ for(j in 1:15){
 }
   lf[[i]] <- lf1
 }
-
-
-setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data/vanilla")
-
 save(lf,file=paste("data_state_georgia", ".dat", sep=''))
 
   
