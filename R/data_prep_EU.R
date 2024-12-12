@@ -1,3 +1,4 @@
+#Data for Set 1 of countries
 library(dplyr)
 library(ggplot2)
 library(alfred)
@@ -168,3 +169,4 @@ for(i in 1:npop){
 for(i in 1:npop){
   data_full[[i]] <- data_full[[i]][,1:82]  
 }
+save(data_full,file=paste("data_set1", ".dat", sep=''))
