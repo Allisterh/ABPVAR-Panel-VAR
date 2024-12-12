@@ -1,10 +1,6 @@
-#setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data")
-#source("truth_gen.R")
-source("function_v2.R")
+source("functions.R")
 load("data_new_s3.dat")
 
-
-start <- proc.time()[3]
 library(matrixcalc)
 library(dplyr)
 library(MASS)
@@ -433,69 +429,3 @@ ferr_med_low[,j] <- forecast$ferr_med_low
 }
 
 ferr_med_low
-
-#========================save=====================================
-save(crps_mat, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                          "/crps_mat_test-", index, ".dat", sep=''))
-save(logs_mat, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                          "/logs_mat_test-", index, ".dat", sep=''))
-save(w_final, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                       "/w_est_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/ferr_med_low_test-", index, ".dat", sep=''))
-
-save(forecast, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/forecast_test-", index, ".dat", sep=''))
-
-#==============================
-
-crps_mat <- list() ; logs_mat <- list()
-ferr_med_low <- matrix(0,nrow=horizon,ncol=npop)
-for(j in 1:npop)
-{
-  pred_sim <- array(0, c(p, horizon, (iteration-burn)))
-  for(i in 1:(iteration-burn)){
-    pred_y <- list()
-    pred_y[[1]] <- as.vector((w_sim[[j]][,,i] %*% data[[j]][,nobs+1]))
-    for ( t in 2:horizon)
-    {
-      pred_y[[t]] <- as.vector((w_sim[[j]][,,i] %*% pred_y[[t-1]]))
-      
-    }
-    pred_y <- as.matrix(do.call(cbind,pred_y))
-    
-    pred_sim [ , , i] <- pred_y
-  }
-  mean <- apply(pred_sim,c(1,2),mean)
-  sd <- apply(pred_sim,c(1,2),sd)
-  crps_mat[[j]] <- matrix(0,nrow = ((3*k1)+k2),ncol=horizon)
-  logs_mat[[j]] <- matrix(0,nrow = ((3*k1)+k2),ncol=horizon)
-  for ( i in 1:horizon)
-  {
-    crps_mat[[j]][,i] <- crps(y = forecast_true[[j]][,i], family = "normal", mean = mean[,i], sd = sd[,i])
-    logs_mat[[j]][,i] <- logs(y = forecast_true[[j]][,i], family = "normal", mean = mean[,i], sd = sd[,i])
-  }
-  
-  forecast <- forecast_cred(pred_sim,forecast_true[[j]],horizon)
-  ferr_med_low[,j] <- forecast$ferr_med_low
-  
-}
-
-ferr_med_low
-
-save(crps_mat, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                          "/crps_v1_test-", index, ".dat", sep=''))
-save(logs_mat, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                          "/logs_v1_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/ferr_med_v1_test-", index, ".dat", sep=''))
-save(data, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/data_test-", index, ".dat", sep=''))
-save(forecast_true, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/forecast_true_test-", index, ".dat", sep=''))
-save(sigma_final, file=paste("/home/nchakraborty/2nd/real_data/data3/new_set3/res2",
-                                 "/sigma_final_test-", index, ".dat", sep=''))
-
-
-
-
