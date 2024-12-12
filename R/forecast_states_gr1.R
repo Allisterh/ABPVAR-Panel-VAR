@@ -1,10 +1,6 @@
-setwd("C:/Backup/2nd project/code/Real data/vanilla/PVAR/with_Georgia")
-#source("truth_gen.R")
-source("function_v2_new.R")
+source("functions.R")
 load("data_state_georgia.dat")
 
-
-start <- proc.time()[3]
 library(matrixcalc)
 library(dplyr)
 library(MASS)
@@ -20,7 +16,6 @@ library(snow)
 library(scoringRules)
 library("CVglasso")
 index <- as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
-#index=1
 set.seed(index+1)
 horizon <- 10
 nobs <- 150 - index
@@ -254,13 +249,4 @@ ferr_med_low[,j] <- forecast$ferr_med_low
 }
 
 ferr_med_low
-
-#========================save=====================================
-save(A_final, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                       "/with_Georgia/res/w_est_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                                 "/with_Georgia/res/ferr_med_low_test-", index, ".dat", sep=''))
-save(sim_mat_final, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                                 "/with_Georgia/res/sim_mat_test-", index, ".dat", sep=''))
-
 
