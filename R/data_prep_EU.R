@@ -5,23 +5,12 @@ library(matrixcalc)
 library(clusterGeneration)
 library(MASS)
 library(Matrix)
-library(glmnet)
-setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data/")
 index <- 1
 
 #==================
 npop <- 4
 
 #Finland, Sweden, Denmark, Norway
-# Q Variables: GDP,Capacity Utilization,Private Final Consumption Expenditure,Total Manufacturing Production,Exports of goods and services
-# M Variables: Consumer Price Index: All Items,Producer Prices Index: Type of goods: Investments goods,Total Share Prices for All Shares,
-
-#Harmonized Unemployment Rate: Total,Real Broad Effective Exchange Rate,Long-Term Government Bond Yields,
-
-#3-Month or 90-day Rates and Yields: Interbank Rates,Production of Total Industry,
-
-#National Currency to US Dollar Exchange Rate,Domestic Producer Prices Index: Manufacturing
-#"FINPITGVG01GYM","SPASTT01FIM657N"
 var <- list()
 
 #Finland
@@ -91,7 +80,6 @@ for(j in set4){
   diff <- diff(log(temp))
   new[[i]][[j]] <- as.data.frame(diff[-c(1:8)])
 }
-###############################from here=================
 
 set5 <- c(8:10,12)
 for(j in set5){
@@ -180,9 +168,3 @@ for(i in 1:npop){
 for(i in 1:npop){
   data_full[[i]] <- data_full[[i]][,1:82]  
 }
-setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data/data3")
-
-save(data_full,file=paste("data", ".dat", sep=''))
-write.csv(data_full[[2]],"data_v2_fin.csv")
-  #Finally remove the last column of the data set to remove the last quarter,
-#to keep the same data with nowcasting models.
