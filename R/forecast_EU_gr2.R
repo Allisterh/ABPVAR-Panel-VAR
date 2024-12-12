@@ -1,6 +1,4 @@
-#setwd("C:/Users/user/Dropbox (UFL)/2nd project/code/Real data")
-#source("truth_gen.R")
-source("function_v2.R")
+source("functions.R")
 load("data_new_s3_g2.dat")
 
 
