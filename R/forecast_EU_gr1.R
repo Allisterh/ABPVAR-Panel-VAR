@@ -1,5 +1,5 @@
 source("functions.R")
-load("data_new_s3.dat")
+load("data_set1.dat")
 
 library(matrixcalc)
 library(dplyr)
@@ -20,7 +20,7 @@ index <- as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
 set.seed(index+1)
 horizon <- 2
 nobs <- 80 - index
-npop <- 3
+npop <- 4
 N <- 1000
 k1 <- 10
 k2 <- 5
