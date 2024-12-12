@@ -1,7 +1,5 @@
--setwd("C:/Users/nchak/OneDrive - iimu.ac.in/2nd-review/vanilla_states/PVAR_Gr2")
-#source("truth_gen.R")
-source("function_v2.R")
-load("data_5states_gr3.dat")
+source("functions.R")
+load("data_5states_gr2.dat")
 
 start <- proc.time()[3]
 library(matrixcalc)
@@ -19,7 +17,6 @@ library(snow)
 library(scoringRules)
 library("CVglasso")
 index <- as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
-#index=1
 set.seed(index+1)
 horizon <- 10
 nobs <- 150 - index
@@ -45,17 +42,14 @@ Q2 <- 0.3*diag(num)
 Q3 <- 0.3*diag(p1)
 df <- max(p1,num)
 theta <- rep(0.5,npop)
-iteration <- 20
-burn <- 10
+iteration <- 2000
+burn <- 1000
 #=======================================Initialize====================================
 sigma <- genPositiveDefMat(p, covMethod=c("eigen", "onion", "c-vine", "unifcorrmat"),  alphad=1, eta=1, rangeVar=c(0.1,1), lambdaLow=1, ratioLambda=2)$Sigma
 sim_mat <- genPositiveDefMat(npop, covMethod=c("eigen", "onion", "c-vine", "unifcorrmat"),  alphad=1, eta=1, rangeVar=c(0.1,1), lambdaLow=1, ratioLambda=2)$Sigma
 U_mat <- genPositiveDefMat(num, covMethod=c("eigen", "onion", "c-vine", "unifcorrmat"),  alphad=1, eta=1, rangeVar=c(0.1,1), lambdaLow=1, ratioLambda=2)$Sigma
 
-#sim_mat <- 0.2*diag(npop)
-#U_mat <- rinvwishart(3,U_sigma)
 tau <- rgamma(ngr,1.5,1.5)
-
 
 for(i in 1:npop){
   for(j in 1: p)
@@ -333,12 +327,5 @@ ferr_med_low[,j] <- forecast$ferr_med_low
 
 ferr_med_low
 
-#========================save=====================================
-save(A_final, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                       "/with_Georgia/res/w_est_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                                 "/with_Georgia/res/ferr_med_low_test-", index, ".dat", sep=''))
-save(sim_mat_final, file=paste("/home/nchakraborty/2nd/real_data/vanilla",
-                                 "/with_Georgia/res/sim_mat_test-", index, ".dat", sep=''))
 
 
