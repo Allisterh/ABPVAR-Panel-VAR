@@ -1,5 +1,5 @@
 source("functions.R")
-load("data_new_s3_g2.dat")
+load("data_set1_g2.dat")
 
 
 start <- proc.time()[3]
