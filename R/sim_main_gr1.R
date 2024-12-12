@@ -1,6 +1,4 @@
-#setwd("C:/Users/user/Dropbox (UFL)/2nd project/code")
-#source("truth_gen.R")
-source("function_v2.R")
+source("functions.R")
 load("A_true_0.1.dat")
 load("w_true_0.1.dat")
 load("sigma_true_0.1.dat")
@@ -25,8 +23,7 @@ k1 <- 20
 k2 <- 10
 p1 <- k1+k2
 p <- (3*k1)+k2
-npop <- 3
-target <- 0.7 #change
+npop <- 10
 nobs <- 300
 theta_true <- rep(0.5,npop)
 theta_true <- rep(0.5,npop)
@@ -72,8 +69,9 @@ d_A22 <- list()
 for(j in 1:npop){
   index <-  as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
   set.seed(index+j)
-  data[[j]] <- data_gen(w_true[[j]],k1,k2,horizon,sigma_true)$data
-  forecast_true[[j]] <- data_gen(w_true[[j]],k1,k2,horizon,sigma_true)$forecast_true
+  temp <- data_gen(w_true[[j]],k1,k2,horizon,sigma_true)
+  data[[j]] <- temp$data
+  forecast_true[[j]] <- temp$forecast_true
   X <- t(data[[j]])[1:nobs,]
   Y <- t(data[[j]])[2:(nobs + 1),]
   LSE <- as.matrix(lm(Y ~ X - 1)$coef)
@@ -83,7 +81,6 @@ for(j in 1:npop){
   b3 <- numeric((k1*k2))
   b4 <- numeric((k2*k2))
   A22_initial <- t(LSE)[(3*k1+1):(3*k1+k2),(3*k1+1):(3*k1+k2)]
-  #b4<- as.vector(vec(A22_initial))
   theta_mat <- theta_matrix(theta[j],b1,b2,b3,b4,k1,k2)$theta_mat
   u <- theta_matrix(theta[j],b1,b2,b3,b4,k1,k2)$u
   v <- theta_matrix(theta[j],b1,b2,b3,b4,k1,k2)$v
@@ -123,11 +120,6 @@ for(j in 1:npop){
 }
 eig
 eig1
-
-#gamma1 <- as.matrix(bdiag(gamma1_list))
-#gamma2 <- as.matrix(bdiag(gamma2_list))
-#gamma3 <- as.matrix(bdiag(gamma3_list))
-#gamma4 <- as.matrix(bdiag(gamma4_list))
 
 #===================================Gibbs=====================================
 w_sim <- list()
@@ -418,16 +410,6 @@ sigma_true <- sigma_true[,vec]
 
 diff_sigma <- sigma_true - sigma_final
 rel_err_sigma <- norm(diff_sigma,'f')/norm(sigma_true,'f')
-#apply(w_sim, c(1,2), mean)
-
-rel_err_A
-rel_err_w
-rel_err_sigma
-theta_final
-
-end <- proc.time()[3]
-time <- end-start
-print(time)
 
 mat <- c(rel_err_A,rel_err_w,rel_err_sigma,theta_final)
 
@@ -479,64 +461,4 @@ ferr_med_low[,j] <- forecast$ferr_med_low
 
 }
 
-
-
-save(mat, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                     "/res_0.1/metric_test-", index, ".dat", sep=''))
-save(data, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                      "/res_0.1/data_test-", index, ".dat", sep=''))
-save(forecast_true, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                      "/res_0.1/ftrue_test-", index, ".dat", sep=''))
-
-save(A_final, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                         "/res_0.1/A_est_test-", index, ".dat", sep=''))
-save(w_final, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                         "/res_0.1//w_est_test-", index, ".dat", sep=''))
-save(sigma_final, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                             "/res_0.1/sigma_est_test-", index, ".dat", sep=''))
-save(theta_final, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                             "/res_0.1/theta_est_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                              "/res_0.1/ferr_med_low_test-", index, ".dat", sep=''))
-save(sim_mat_final, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                     "/res_0.1/sim_mat_test-", index, ".dat", sep=''))
-#================================================
-crps_mat <- list() ; logs_mat <- list()
-ferr_med_low <- matrix(0,nrow=horizon,ncol=npop)
-for(j in 1:npop)
-{
-  pred_sim <- array(0, c(p, horizon, (iteration-burn)))
-  for(i in 1:(iteration-burn)){
-    pred_y <- list()
-    pred_y[[1]] <- as.vector((w_sim[[j]][,,i] %*% data[[j]][,nobs+1]))
-    for ( t in 2:horizon)
-    {
-      pred_y[[t]] <- as.vector((w_sim[[j]][,,i] %*% pred_y[[t-1]]))
-      
-    }
-    pred_y <- as.matrix(do.call(cbind,pred_y))
-    
-    pred_sim [ , , i] <- pred_y
-  }
-  mean <- apply(pred_sim,c(1,2),mean)
-  sd <- apply(pred_sim,c(1,2),sd)
-  crps_mat[[j]] <- matrix(0,nrow = ((3*k1)+k2),ncol=horizon)
-  logs_mat[[j]] <- matrix(0,nrow = ((3*k1)+k2),ncol=horizon)
-  for ( i in 1:horizon)
-  {
-    crps_mat[[j]][,i] <- crps(y = forecast_true[[j]][,i], family = "normal", mean = mean[,i], sd = sd[,i])
-    logs_mat[[j]][,i] <- logs(y = forecast_true[[j]][,i], family = "normal", mean = mean[,i], sd = sd[,i])
-  }
-  
-  forecast <- forecast_cred(pred_sim,forecast_true[[j]],horizon)
-  ferr_med_low[,j] <- forecast$ferr_med_low
-  
-}
-
-save(crps_mat, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                          "/res_0.1/crps_v1_test-", index, ".dat", sep=''))
-save(logs_mat, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                          "/res_0.1/logs_v1_test-", index, ".dat", sep=''))
-save(ferr_med_low, file=paste("/home/nchakraborty/2nd/sim/s1_n=300/sig_0.1",
-                              "/res_0.1/ferr_med_v1_test-", index, ".dat", sep=''))
 
