@@ -5,32 +5,26 @@ This contains all the R codes used for implementing the methods proposed in the 
  VECTOR AUTOREGRESSIVE MODELS WITH MIXED FREQUENCY DATA' by Chakraborty, Khare and Michailidis.
 
 Details on the key files:
+1.functions.R: Contains all the R functions related to estimation and forecasting by the proposed ABPVAR model with mixed frequency data.
 
-functions.R
+2.function_states.R: Contains all the R functions related to estimation and forecasting by the proposed ABPVAR model in an identical frequency setting.
 
-Contains all the R functions related to the estimation and forecasting by the proposed ABPVAR model.
+3.sim_gr1.R: Generates true VAR transition matrices, simulates data according to ABPVAR Grouping 1 model and performs estimation and forecasting on the simulated data using ABPVAR model with Grouping 1.
 
-truth_gen_sim_gr1.R and truth_gen_sim_gr2.R
+4.sim_gr2.R: Generates true VAR transition matrices, simulates data according to ABPVAR Grouping 2 model and performs estimation and forecasting on the simulated data using ABPVAR model with Grouping 2.
 
-Generates the true VAR transition matrices for simulations using data generated according to Grouping 1 and Grouping 2 of the ABPVAR model, respectively.
+5.data_US_states_gr1.R and data_US_states_gr2.R: Prepares data for analysis of macroeconomic data for multiple US states used in the paper, for application of the ABPVAR model with Grouping 1 and 2 respectively.
 
-sim_main_gr1.R and sim_main_gr2.R
+6.forecast_states_gr1.R and forecast_states_gr2.R: Performs forecasting exercise using ABPVAR model with Grouping 1 and 2 respectively, based on datasets prepared by the R scripts 'data_US_states_gr1.R' and 'data_US_states_gr2.R'.
 
-Performs estimation and prediction by ABPVAR model with Grouping 1 and 2 respectively, used in simulations studies.
+7.data_US_states_gr1_2nd_vintage.R and data_US_states_gr2_2nd_vintage.R: Prepares data for analysis of macroeconomic data for multiple US states used in the paper, using the second vintage of the most recent data, for application of the ABPVAR model with Grouping 1 and 2 respectively.
 
-data_prep_states.R
+8.data_EU_gr1.R and data_EU_gr2.R: Prepares mixed frequency data for analysis of macroeconomic data for all sets of European countries used in the paper, for application of the ABPVAR model with Grouping 1 and 2 respectively.
 
-Code for preparing data on multiple US states used in our macroeconomic data analysis using identical frequency.
+9.forecast_EU_g1.R and forecast_EU_g2.R: Performs forecasting exercise using mixed frequency ABPVAR model with Grouping 1 and 2 respectively, based on a dataset prepared by the R scripts data_EU_gr1.R and data_EU_gr2.R.
 
-forecast_states_gr1.R,forecast_states_gr2.R
+10.data_EU_gr1_2nd_vintage.R and data_EU_gr2_2nd_vintage.R: Prepares mixed frequency data for analysis of macroeconomic data for a set of European countries used in the paper, using the second vintage of the most recent data, for application of the ABPVAR model with Grouping 1 and 2 respectively. The forecasting exercise using ABPVAR model with Grouping 1 and 2 can be performed on these datasets using the R scripts 'forecast_EU_g1.R' and 'forecast_EU_g2.R' respectively, in a similar way.
 
-Code for forecasting analysis by ABPVAR model with Grouping 1 and 2 respectively, using multiple US states data .
+11.sim_missp.R: Generates true VAR transition matrices, simulates data and performs analysis using ABPVAR model to assess the effect of misspecification on its forecasting performance, as described in the supplement.
 
-data_prep_EU.R
-
-Code for preparing data on European countries used in our macroeconomic data analysis using mixed frequency.
-
-forecast_EU_gr1.R,forecast_EU_gr2.R
-
-Code for forecasting analysis by ABPVAR model with Grouping 1 and 2 respectively, using data on European countries.
-
+12.Sim_Theta_mat.R: Generates true VAR transition matrices, simulates data and performs analysis using ABPVAR model to evaluate the role of the similarity matrix, as described in the paper.
