@@ -5,6 +5,7 @@ This contains all the R codes used for implementing the methods proposed in the 
  VECTOR AUTOREGRESSIVE MODELS WITH MIXED FREQUENCY DATA' by Chakraborty, Khare and Michailidis.
 
 Details on the key files:
+
 1.functions.R: Contains all the R functions related to estimation and forecasting by the proposed ABPVAR model with mixed frequency data.
 
 2.function_states.R: Contains all the R functions related to estimation and forecasting by the proposed ABPVAR model in an identical frequency setting.
